@@ -41,6 +41,7 @@
 }
 
 - (IBAction)touchCardButton:(UIButton *)sender {
+    self.gameplayMode.enabled = NO;
     long cardIndex = [self.cardButtons indexOfObject:sender];
     [self.game chooseCardAtIndex:cardIndex];
     [self updateUI];
