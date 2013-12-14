@@ -11,6 +11,7 @@
 @interface MatchismoCardMatchingGame()
 @property (nonatomic,readwrite) NSInteger score;
 @property (nonatomic,strong) NSMutableArray *cards; // an array of Matchismo cards.
+@property (nonatomic,readwrite) NSInteger gameplayMode;
 @end
 
 @implementation MatchismoCardMatchingGame
@@ -20,7 +21,7 @@
     return _cards;
 }
 
-- (instancetype) initWithCardCount:(NSUInteger)count usingDeck:(MatchismoDeck *)deck {
+- (instancetype) initWithCardCount:(NSUInteger)count usingDeck:(MatchismoDeck *)deck gameMode:(NSInteger)mode {
     self = [super init];
     if (self) {
         for (int i = 0; i < count; i++) {
@@ -33,6 +34,7 @@
                 break;
             }
         }
+        _gameplayMode = mode;
     }
     return self;
 }
@@ -50,23 +52,31 @@
     
     if (!card.isMatched) {
         if (card.isChosen) {
-            card.chosen = NO;
+            card.chosen = NO; // flip / unselect the card.
         }
         else {
-            for (MatchismoCard* otherCard in self.cards) {
-                if (otherCard.isChosen && !otherCard.isMatched) {
-                    int matchScore = [card match:@[otherCard]];
-                    if (matchScore > 0) {
-                        self.score += matchScore + MATCH_BONUS;
-                        card.matched = YES;
-                        otherCard.matched = YES;
+            NSMutableArray* picks = [[NSMutableArray alloc] init];
+            for (MatchismoCard* pickedCard in self.cards) {
+                if (pickedCard.isChosen && !pickedCard.isMatched) {
+                    [picks addObject:pickedCard];
+                }
+            }
+            
+            if ([picks count] == self.gameplayMode+1) {
+                int score = [card match:picks];
+                if (score) {
+                    self.score += (score * MATCH_BONUS);
+                    card.matched = YES;
+                    for (MatchismoCard* pickedCard in picks) {
+                        pickedCard.matched = YES;
                     }
-                    else {
-                        self.score -= MISMATCH_PENALTY;
-                        otherCard.chosen = NO;
-                        
+                }
+                else {
+                    self.score -= (MISMATCH_PENALTY * self.gameplayMode);
+                    for (MatchismoCard* pickedCard in picks) {
+                        pickedCard.chosen = NO;
+                        pickedCard.matched = NO;
                     }
-                    break;
                 }
             }
             self.score -= COST_TO_CHOOSE;

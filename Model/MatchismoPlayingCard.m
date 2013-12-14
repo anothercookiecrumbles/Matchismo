@@ -44,19 +44,41 @@
     }
 }
 
-- (int) match:(NSArray *)otherCards {
+- (int) match:(MatchismoPlayingCard*)firstCard otherCard:(MatchismoPlayingCard*) otherCard {
     int score = 0;
-    if ([otherCards count] == 1) {
-        MatchismoPlayingCard* otherCard = [otherCards firstObject]; // if array is empty, firstObject returns nil
+    if ([firstCard isKindOfClass:[MatchismoPlayingCard class]] && [otherCard isKindOfClass:[MatchismoPlayingCard class]]) {
         if (otherCard) {
-            if ([self.suit isEqualToString:otherCard.suit]) {
+            if ([firstCard.suit isEqualToString:otherCard.suit]) {
                 score = 1;
             }
-            if (self.rank == otherCard.rank) {
+            if (firstCard.rank == otherCard.rank) {
                 score = 4;
             }
         }
     }
+    else {
+        NSLog(@"The cards to be matched are not of type MatchismoPlayingCard.");
+    }
+    return score;
+}
+
+- (int) match:(NSArray*) otherCards {
+    int score = 0;
+    NSMutableArray *cards = [otherCards mutableCopy];
+    
+    for (MatchismoCard* otherCard in otherCards) {
+        if ([otherCard isKindOfClass:[MatchismoPlayingCard class]]) {
+            MatchismoPlayingCard* matchCard = (MatchismoPlayingCard*) otherCard;
+            score += [self match:self otherCard:matchCard];
+        
+            [cards removeObject:otherCard];
+        
+            for (MatchismoPlayingCard* card in cards) {
+                score += [self match:matchCard otherCard:card];
+            }
+        }
+    }
+    
     return score;
 }
 

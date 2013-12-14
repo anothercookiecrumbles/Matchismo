@@ -10,10 +10,11 @@
 
 @interface MatchismoCardMatchingGame : NSObject
 
-- (instancetype) initWithCardCount:(NSUInteger) count usingDeck:(MatchismoDeck*) deck;
+- (instancetype) initWithCardCount:(NSUInteger)count usingDeck:(MatchismoDeck*)deck gameMode:(NSInteger)mode;
 - (void) chooseCardAtIndex:(NSUInteger) index;
 - (MatchismoCard*) cardAtIndex:(NSUInteger) index;
 
 @property (nonatomic,readonly) NSInteger score;
+@property (nonatomic,readonly) NSInteger gameplayMode;
 
 @end

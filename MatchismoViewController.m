@@ -14,6 +14,7 @@
 @property (nonatomic, strong) MatchismoDeck *deck;
 @property (nonatomic, strong) MatchismoCardMatchingGame *game;
 
+@property (weak, nonatomic) IBOutlet UISegmentedControl *gameplayMode;
 @property (weak, nonatomic) IBOutlet UILabel *scoreLabel;
 @property (strong, nonatomic) IBOutletCollection(UIButton) NSArray *cardButtons;
 
@@ -33,31 +34,26 @@
 }
 
 - (MatchismoCardMatchingGame*) game {
-    if (!_game) _game = [[MatchismoCardMatchingGame alloc] initWithCardCount:[self.cardButtons count] usingDeck:[self createDeck]];
+    if (!_game) _game = [[MatchismoCardMatchingGame alloc] initWithCardCount:[self.cardButtons count]
+                                                                   usingDeck:[self createDeck]
+                                                                    gameMode:[self.gameplayMode selectedSegmentIndex]];
     return _game;
 }
 
 - (IBAction)touchCardButton:(UIButton *)sender {
-    //    if ([sender.currentTitle length])
-    //    {
-    //        [sender setBackgroundImage:[UIImage imageNamed:@"cardback"]
-    //                          forState:UIControlStateNormal];
-    //        [sender setTitle:@"" forState:UIControlStateNormal];
-    //    }
-    //    else
-    //    {
-    //        // [sender setTitle:@"A♣︎" forState:UIControlStateNormal];
-    //        MatchismoCard *card = [self.deck drawRandomCard];
-    //        if (card) {
-    //            [sender setBackgroundImage:[UIImage imageNamed:@"cardfront"]
-    //                              forState:UIControlStateNormal];
-    //            [sender setTitle:[card contents] forState:UIControlStateNormal];
-    //        }
-    //    }
     long cardIndex = [self.cardButtons indexOfObject:sender];
     [self.game chooseCardAtIndex:cardIndex];
     [self updateUI];
     
+}
+
+- (IBAction)redealCards {
+    self.gameplayMode.enabled = YES;
+    self.game = nil;
+    [self updateUI];
+}
+- (IBAction)selectGameplayMode:(UISegmentedControl *)sender {
+    [self redealCards];
 }
 
 - (void) updateUI {
