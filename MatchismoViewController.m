@@ -18,6 +18,8 @@
 @property (weak, nonatomic) IBOutlet UILabel *scoreLabel;
 @property (weak, nonatomic) IBOutlet UITextView *moveDetails;
 @property (strong, nonatomic) IBOutletCollection(UIButton) NSArray *cardButtons;
+@property (weak, nonatomic) IBOutlet UISlider *historySlider;
+@property (strong, nonatomic) NSMutableArray *history;
 @end
 
 @implementation MatchismoViewController
@@ -30,6 +32,11 @@
 
 - (MatchismoDeck*) createDeck {
     return [[MatchismoPlayingCardDeck alloc] init];
+}
+
+- (NSMutableArray*) history {
+    if (!_history) _history = [[NSMutableArray alloc] init];
+    return _history;
 }
 
 - (MatchismoCardMatchingGame*) game {
@@ -60,11 +67,20 @@
 - (IBAction)redealCards {
     self.gameplayMode.enabled = YES;
     self.game = nil;
+    self.history = nil;
     [self updateUI];
 }
 
 - (IBAction)selectGameplayMode:(UISegmentedControl *)sender {
     [self redealCards];
+}
+
+- (IBAction)selectPointOnSlider:(UISlider *)sender {
+    int sliderValue = self.historySlider.value;
+    [self.historySlider setValue:sliderValue animated:NO];
+    if ([self.history count]) {
+        self.moveDetails.text = self.history[sliderValue];
+    }
 }
 
 - (void) updateUI {
@@ -77,6 +93,7 @@
     }
     self.scoreLabel.text = [NSString stringWithFormat:@"Score: %ld", (long)self.game.score];
     [self updateLastMove];
+    [self updateHistorySliderOnLastMove];
 }
 
 - (void) updateLastMove {
@@ -87,7 +104,7 @@
             [pickedCards addObject:pickedCard.description];
         }
         if (self.game.lastMoveScore > 0) { // this would indicate a match
-            defineMove = [NSString stringWithFormat:@"Matched %@ for %d points",[pickedCards componentsJoinedByString:@", "],self.game.lastMoveScore];
+            defineMove = [NSString stringWithFormat:@"Matched %@ for %d points!",[pickedCards componentsJoinedByString:@", "],self.game.lastMoveScore];
         }
         else {
             int absoluteScore = abs(self.game.lastMoveScore);
@@ -97,6 +114,14 @@
     }
     else {
         self.moveDetails.text = @""; // reset the text, so you don't have nasty "(null)" text.
+    }
+}
+
+- (void) updateHistorySliderOnLastMove {
+    if (self.game.lastMove) {
+        [self.history addObject:self.moveDetails.text];
+        self.historySlider.maximumValue = [self.history count]-1;
+        [self.historySlider setValue:self.historySlider.maximumValue animated:YES];
     }
 }
 
