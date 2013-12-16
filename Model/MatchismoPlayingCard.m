@@ -14,6 +14,10 @@
     return [[MatchismoPlayingCard validRanks][self.rank] stringByAppendingString:self.suit];
 }
 
+- (NSString*) description {
+    return [self contents];
+}
+
 @synthesize suit = _suit;
 
 - (void) setSuit:(NSString *)suit {

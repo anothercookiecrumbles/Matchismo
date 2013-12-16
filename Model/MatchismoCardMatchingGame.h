@@ -16,5 +16,6 @@
 
 @property (nonatomic,readonly) NSInteger score;
 @property (nonatomic,readonly) NSInteger gameplayMode;
-
+@property (nonatomic,readonly,strong) NSArray* lastMove;
+@property (nonatomic,readonly) int lastMoveScore;
 @end

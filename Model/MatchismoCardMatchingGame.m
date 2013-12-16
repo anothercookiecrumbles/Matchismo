@@ -12,6 +12,9 @@
 @property (nonatomic,readwrite) NSInteger score;
 @property (nonatomic,strong) NSMutableArray *cards; // an array of Matchismo cards.
 @property (nonatomic,readwrite) NSInteger gameplayMode;
+@property (nonatomic,readwrite,strong) NSArray *lastMove;
+@property (nonatomic,readwrite) int lastMoveScore;
+
 @end
 
 @implementation MatchismoCardMatchingGame
@@ -49,8 +52,8 @@
 
 - (void) chooseCardAtIndex:(NSUInteger)index {
     MatchismoCard* card = [self cardAtIndex:index];
-    
     if (!card.isMatched) {
+        
         if (card.isChosen) {
             card.chosen = NO; // flip / unselect the card.
         }
@@ -62,24 +65,29 @@
                 }
             }
             
+            // reset lastMove, lastMoveScore - is this the best place to do it?
+            self.lastMoveScore = 0;
+            self.lastMove = [picks arrayByAddingObject:card];
+            
             if ([picks count] == self.gameplayMode+1) {
-                int score = [card match:picks];
-                if (score) {
-                    self.score += (score * MATCH_BONUS);
+                self.lastMoveScore = [card match:picks];
+                
+                if (self.lastMoveScore) {
+                    self.lastMoveScore *= (MATCH_BONUS * self.gameplayMode);
                     card.matched = YES;
                     for (MatchismoCard* pickedCard in picks) {
                         pickedCard.matched = YES;
                     }
                 }
                 else {
-                    self.score -= (MISMATCH_PENALTY * self.gameplayMode);
+                    self.lastMoveScore -= (MISMATCH_PENALTY * self.gameplayMode);
                     for (MatchismoCard* pickedCard in picks) {
                         pickedCard.chosen = NO;
                         pickedCard.matched = NO;
                     }
                 }
             }
-            self.score -= COST_TO_CHOOSE;
+            self.score += self.lastMoveScore - COST_TO_CHOOSE;
             card.chosen = YES;
         }
     }
