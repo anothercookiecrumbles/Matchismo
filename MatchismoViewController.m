@@ -7,7 +7,6 @@
 //
 
 #import "MatchismoViewController.h"
-#import "MatchismoPlayingCardDeck.h"
 #import "MatchismoCardMatchingGame.h"
 
 @interface MatchismoViewController ()
@@ -30,8 +29,8 @@
     return _deck;
 }
 
-- (MatchismoDeck*) createDeck {
-    return [[MatchismoPlayingCardDeck alloc] init];
+- (MatchismoDeck*) createDeck { // abstract method
+    return nil;
 }
 
 - (NSMutableArray*) history {
