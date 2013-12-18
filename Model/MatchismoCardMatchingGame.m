@@ -80,7 +80,7 @@
                     }
                 }
                 else {
-                    self.lastMoveScore -= (MISMATCH_PENALTY * self.gameplayMode);
+                    self.lastMoveScore -= (MISMATCH_PENALTY * (self.gameplayMode+1));
                     for (MatchismoCard* pickedCard in picks) {
                         pickedCard.chosen = NO;
                         pickedCard.matched = NO;
