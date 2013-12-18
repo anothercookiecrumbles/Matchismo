@@ -73,7 +73,7 @@
                 self.lastMoveScore = [card match:picks];
                 
                 if (self.lastMoveScore) {
-                    self.lastMoveScore *= (MATCH_BONUS * self.gameplayMode);
+                    self.lastMoveScore *= (MATCH_BONUS * (self.gameplayMode+1));
                     card.matched = YES;
                     for (MatchismoCard* pickedCard in picks) {
                         pickedCard.matched = YES;
