@@ -46,9 +46,6 @@
         NSAttributedString* displayString = [self constructDisplayString:(MatchismoSetCard*)card];
         [cardButton setAttributedTitle:displayString forState:UIControlStateNormal];
         cardButton.enabled = !card.isMatched;
-        if (!cardButton.enabled) {
-            cardButton.alpha=0.1;
-        }
     }
     [self updateScore];
 }
