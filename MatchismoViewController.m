@@ -11,7 +11,6 @@
 
 @interface MatchismoViewController ()
 @property (nonatomic, strong) MatchismoDeck *deck;
-@property (nonatomic, strong) MatchismoCardMatchingGame *game;
 
 @property (weak, nonatomic) IBOutlet UISegmentedControl *gameplayMode;
 @property (weak, nonatomic) IBOutlet UILabel *scoreLabel;
@@ -29,7 +28,7 @@
     return _deck;
 }
 
-- (MatchismoDeck*) createDeck { // abstract method
+- (MatchismoDeck*) createDeck{ // abstract method
     return nil;
 }
 
@@ -41,7 +40,7 @@
 - (MatchismoCardMatchingGame*) game {
     if (!_game) _game = [[MatchismoCardMatchingGame alloc] initWithCardCount:[self.cardButtons count]
                                                                    usingDeck:[self createDeck]
-                                                                    gameMode:[self.gameplayMode selectedSegmentIndex]];
+                                                                    gameMode:self.gameMode];
     return _game;
 }
 
@@ -71,6 +70,7 @@
 }
 
 - (IBAction)selectGameplayMode:(UISegmentedControl *)sender {
+    self.gameMode = [self.gameplayMode selectedSegmentIndex];
     [self redealCards];
 }
 
@@ -90,9 +90,13 @@
         [cardButton setBackgroundImage:[self backgroundImageForCard:card] forState:UIControlStateNormal];
         cardButton.enabled = !card.isMatched;
     }
-    self.scoreLabel.text = [NSString stringWithFormat:@"Score: %ld", (long)self.game.score];
+    [self updateScore];
     [self updateLastMove];
     [self updateHistorySliderOnLastMove];
+}
+
+- (void) updateScore {
+    self.scoreLabel.text = [NSString stringWithFormat:@"Score: %ld", (long)self.game.score];
 }
 
 - (void) updateLastMove {

@@ -11,9 +11,14 @@
 
 #import <UIKit/UIKit.h>
 #import "MatchismoDeck.h"
+#import "MatchismoCardMatchingGame.h"
 
 @interface MatchismoViewController : UIViewController
 
 - (MatchismoDeck*) createDeck;
+- (NSString*) titleForCard:(MatchismoCard*) card;
+- (void) updateScore;
 
+@property (nonatomic,strong) MatchismoCardMatchingGame* game;
+@property (nonatomic) int gameMode;
 @end
