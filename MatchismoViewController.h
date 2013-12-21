@@ -18,6 +18,7 @@
 - (MatchismoDeck*) createDeck;
 - (NSString*) titleForCard:(MatchismoCard*) card;
 - (void) updateScore;
+- (void) updateLastMove;
 
 @property (nonatomic,strong) MatchismoCardMatchingGame* game;
 @property (nonatomic) int gameMode;

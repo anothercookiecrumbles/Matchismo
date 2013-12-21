@@ -46,8 +46,13 @@
         NSAttributedString* displayString = [self constructDisplayString:(MatchismoSetCard*)card];
         [cardButton setAttributedTitle:displayString forState:UIControlStateNormal];
         cardButton.enabled = !card.isMatched;
+        if (!cardButton.enabled) {
+            NSLog(@"Resetting the title on cardButton: %@", cardButton.titleLabel.text);
+            [cardButton setAttributedTitle:[[NSAttributedString alloc] initWithString:@"" attributes:nil] forState:UIControlStateNormal];
+        }
     }
     [self updateScore];
+    [self updateLastMove];
 }
 
 - (NSAttributedString*) constructDisplayString:(MatchismoSetCard*) card {
