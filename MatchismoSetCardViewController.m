@@ -96,7 +96,7 @@
             shape = @"●";
         }
         else if ([card.shape isEqualToString:@"squiggle"]) {
-            shape = @"✭";
+            shape = @"◼︎";
         }
         else if ([card.shape isEqualToString:@"diamond"]) {
             shape = @"▲";
@@ -105,7 +105,7 @@
             NSLog(@"Unrecognised shape %@", card.shape);
         }
         
-        shape = [shape stringByPaddingToLength:card.number withString:shape startingAtIndex:0];
+        shape = [shape stringByPaddingToLength:(card.number * [shape length]) withString:shape startingAtIndex:0];
         
         stringToDisplay = [[NSAttributedString alloc] initWithString:shape attributes:attributeDictionary];
     }

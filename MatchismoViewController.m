@@ -101,7 +101,7 @@
 
 - (void) updateLastMove {
     if (self.game.lastMove) {   // only update if there is a last move. 
-        NSString* defineMove = [[NSString alloc] init];
+        NSString* defineMove;
         NSMutableArray* pickedCards = [[NSMutableArray alloc] init];
         for (MatchismoCard* pickedCard in self.game.lastMove) {
             [pickedCards addObject:pickedCard.description];

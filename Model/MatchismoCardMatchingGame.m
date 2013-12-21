@@ -37,7 +37,7 @@
                 break;
             }
         }
-        _gameplayMode = mode;
+        self.gameplayMode = mode;
     }
     return self;
 }
