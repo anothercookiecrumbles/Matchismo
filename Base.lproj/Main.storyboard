@@ -743,7 +743,7 @@
         <scene sceneID="cek-fd-X9T">
             <objects>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="mRT-Be-idU" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Match" id="2GR-e7-OPM"/>
+                    <tabBarItem key="tabBarItem" title="Match" image="drama" id="2GR-e7-OPM"/>
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="bau-SW-83Q">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
@@ -762,7 +762,7 @@
         <scene sceneID="H1k-Vq-37I">
             <objects>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="PYI-OC-TfW" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Set" id="Apv-NX-0xl"/>
+                    <tabBarItem key="tabBarItem" tag="2" title="Set" image="mathematical-instrument" id="Apv-NX-0xl"/>
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="4iH-G3-lze">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
@@ -780,6 +780,8 @@
     </scenes>
     <resources>
         <image name="cardback" width="900" height="1367"/>
+        <image name="drama" width="30" height="30"/>
+        <image name="mathematical-instrument" width="30" height="30"/>
     </resources>
     <color key="tintColor" red="0.095816431316132766" green="0.16148798026729166" blue="0.40015709918478259" alpha="1" colorSpace="calibratedRGB"/>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
