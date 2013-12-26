@@ -8,6 +8,7 @@
 
 #import "MatchismoViewController.h"
 #import "MatchismoCardMatchingGame.h"
+#import "MatchismoHistoryViewController.h"
 
 @interface MatchismoViewController ()
 @property (nonatomic, strong) MatchismoDeck *deck;
@@ -16,7 +17,6 @@
 @property (weak, nonatomic) IBOutlet UILabel *scoreLabel;
 @property (weak, nonatomic) IBOutlet UITextView *moveDetails;
 @property (strong, nonatomic) IBOutletCollection(UIButton) NSArray *cardButtons;
-@property (weak, nonatomic) IBOutlet UISlider *historySlider;
 @property (strong, nonatomic) NSMutableArray *history;
 @end
 
@@ -74,14 +74,6 @@
     [self redealCards];
 }
 
-- (IBAction)selectPointOnSlider:(UISlider *)sender {
-    int sliderValue = self.historySlider.value;
-    [self.historySlider setValue:sliderValue animated:NO];
-    if ([self.history count]) {
-        self.moveDetails.text = self.history[sliderValue];
-    }
-}
-
 - (void) updateUI {
     for (UIButton *cardButton in self.cardButtons) {
         long index = [self.cardButtons indexOfObject:cardButton];
@@ -92,7 +84,6 @@
     }
     [self updateScore];
     [self updateLastMove];
-    [self updateHistorySliderOnLastMove];
 }
 
 - (void) updateScore {
@@ -106,14 +97,16 @@
             NSMutableAttributedString* move = [[NSMutableAttributedString alloc] initWithString:@"Matched "];
             [move appendAttributedString:details];
             [move appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@" for %d points!",self.game.lastMoveScore]]];
-            self.moveDetails.attributedText = move;
+            details = (NSAttributedString*) move;
         }
         else {
             int absoluteScore = abs(self.game.lastMoveScore);
             NSMutableAttributedString* move = [[NSMutableAttributedString alloc] initWithAttributedString:details];
             [move appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@" don't match. %d points penalty!",absoluteScore]]];
-            self.moveDetails.attributedText = move;
+            details = [[NSAttributedString alloc] initWithAttributedString:move];
         }
+        self.moveDetails.attributedText = details;
+        [self.history addObject:details];
     }
     else {
         self.moveDetails.attributedText = nil; // reset the text, so you don't have nasty "(null)" text.
@@ -131,9 +124,6 @@
 
 - (void) updateHistorySliderOnLastMove {
     if (self.game.lastMove) {
-        [self.history addObject:self.moveDetails.text];
-        self.historySlider.maximumValue = [self.history count]-1;
-        [self.historySlider setValue:self.historySlider.maximumValue animated:YES];
     }
 }
 
@@ -143,6 +133,15 @@
 
 - (UIImage*) backgroundImageForCard:(MatchismoCard*) card {
     return [UIImage imageNamed:card.isChosen ? @"cardfront" : @"cardback"];
+}
+
+- (void) prepareForSegue:(UIStoryboardSegue *)identifier sender:(id)sender {
+    if ([identifier.identifier isEqualToString:@"View History"]) {
+        if ([identifier.destinationViewController isKindOfClass:[MatchismoHistoryViewController class]]) {
+            MatchismoHistoryViewController* hvc = (MatchismoHistoryViewController*) identifier.destinationViewController;
+            hvc.history = self.history;
+        }
+    }
 }
 
 @end
