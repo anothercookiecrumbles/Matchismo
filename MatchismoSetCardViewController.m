@@ -35,6 +35,7 @@
  * No compile-time checking though. Would be nice if Objective-C had something similar to 
  * annotations in Java, or attributes in C#.
  */
+#pragma begin overrides //  I just want to highlight overrides =( | This is probably not the best way to use pragma. 
 - (void) updateUI {
     for (UIButton *cardButton in self.cardButtons) {
         long index = [self.cardButtons indexOfObject:cardButton];
@@ -47,13 +48,33 @@
         [cardButton setAttributedTitle:displayString forState:UIControlStateNormal];
         cardButton.enabled = !card.isMatched;
         if (!cardButton.enabled) {
-            NSLog(@"Resetting the title on cardButton: %@", cardButton.titleLabel.text);
             [cardButton setAttributedTitle:[[NSAttributedString alloc] initWithString:@"" attributes:nil] forState:UIControlStateNormal];
         }
     }
     [self updateScore];
     [self updateLastMove];
 }
+
+- (NSAttributedString*) lastMove {
+    NSMutableAttributedString* cards = [NSMutableAttributedString new];
+    NSMutableArray* pickedCards = [[NSMutableArray alloc] init];
+    for (MatchismoCard* pickedCard in self.game.lastMove) {
+        [pickedCards addObject:pickedCard.description];
+        if ([pickedCard isKindOfClass:[MatchismoSetCard class]]) {
+            MatchismoSetCard* setCard = (MatchismoSetCard*)pickedCard;
+            NSAttributedString* card = [self constructDisplayString:setCard];
+            [cards appendAttributedString:card];
+            if (pickedCard != [self.game.lastMove lastObject]) {
+                [cards appendAttributedString:[[NSAttributedString alloc] initWithString:@", "]];
+            }
+        }
+        else {
+            NSLog(@"The picked card is not a MatchismoSetCard.");
+        }
+    }
+    return cards;
+}
+#pragma end overrides //  I just want to highlight overrides =(
 
 - (NSAttributedString*) constructDisplayString:(MatchismoSetCard*) card {
     NSAttributedString* stringToDisplay = [NSMutableAttributedString new];

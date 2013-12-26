@@ -100,24 +100,33 @@
 }
 
 - (void) updateLastMove {
-    if (self.game.lastMove) {   // only update if there is a last move. 
-        NSString* defineMove;
-        NSMutableArray* pickedCards = [[NSMutableArray alloc] init];
-        for (MatchismoCard* pickedCard in self.game.lastMove) {
-            [pickedCards addObject:pickedCard.description];
-        }
+    if (self.game.lastMove) {   // only update if there is a last move.
+        NSAttributedString* details = [self lastMove];
         if (self.game.lastMoveScore > 0) { // this would indicate a match
-            defineMove = [NSString stringWithFormat:@"Matched %@ for %d points!",[pickedCards componentsJoinedByString:@", "],self.game.lastMoveScore];
+            NSMutableAttributedString* move = [[NSMutableAttributedString alloc] initWithString:@"Matched "];
+            [move appendAttributedString:details];
+            [move appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@" for %d points!",self.game.lastMoveScore]]];
+            self.moveDetails.attributedText = move;
         }
         else {
             int absoluteScore = abs(self.game.lastMoveScore);
-            defineMove = [NSString stringWithFormat:@"%@ don't match! %d points penalty!",[pickedCards componentsJoinedByString:@","],absoluteScore];
+            NSMutableAttributedString* move = [[NSMutableAttributedString alloc] initWithAttributedString:details];
+            [move appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@" don't match. %d points penalty!",absoluteScore]]];
+            self.moveDetails.attributedText = move;
         }
-        self.moveDetails.text = defineMove;
     }
     else {
-        self.moveDetails.text = @""; // reset the text, so you don't have nasty "(null)" text.
+        self.moveDetails.attributedText = nil; // reset the text, so you don't have nasty "(null)" text.
     }
+}
+
+- (NSAttributedString*) lastMove {
+    NSMutableArray* pickedCards = [[NSMutableArray alloc] init];
+    for (MatchismoCard* pickedCard in self.game.lastMove) {
+        [pickedCards addObject:pickedCard.description];
+    }
+    NSAttributedString* cards = [[NSAttributedString alloc] initWithString:[pickedCards componentsJoinedByString:@", "]];
+    return cards;
 }
 
 - (void) updateHistorySliderOnLastMove {
